@@ -1,0 +1,34 @@
+%%{init: { 'themeVariables': { 'actorFontSize': '18px', 'participantFontSize': '18px', 'messageFontSize': '16px', 'noteFontSize': '16px', 'sequenceNumberFontSize': '16px' }}}%%
+sequenceDiagram
+    autonumber
+    actor User as Người dùng
+    participant V as View (login.jsp)
+    participant C as Controller (login.java)
+    participant M as Model (UserDAO)
+    participant D as Data (List<User>)
+
+    User->>V: Nhập Username/Password & nhấn "Đăng nhập"
+    V->>C: POST /login (txt_username, txt_password)
+    activate C
+    
+    C->>M: checkLogin(username, password)
+    activate M
+    M->>D: Duyệt danh sách tìm User
+    D-->>M: Trả về User hoặc null
+    M-->>C: Trả về đối tượng User/null
+    deactivate M
+
+    alt Thành công (User != null)
+        C->>C: setAttribute("user", user)
+        C->>C: setAttribute("message", "Chào mừng...")
+    else Thất bại (User == null)
+        C->>M: exists(username)
+        activate M
+        M-->>C: True/False
+        deactivate M
+        C->>C: setAttribute("message", "Lỗi...")
+    end
+
+    C->>V: Forward (request, response)
+    deactivate C
+    V-->>User: Hiển thị thông báo và kết quả

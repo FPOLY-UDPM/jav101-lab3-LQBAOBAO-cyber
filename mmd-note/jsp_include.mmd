@@ -1,0 +1,20 @@
+sequenceDiagram
+    autonumber
+    participant Browser as Trình duyệt (Client)
+    participant Container as JSP Container (Tomcat)
+    participant MainServlet as Main_jsp (Servlet 1)
+    participant SubServlet as Sub_jsp (Servlet 2)
+
+    Browser->>Container: Gửi HTTP Request (main.jsp)
+    Container->>MainServlet: Thực thi logic file chính
+
+    Note over MainServlet: Đang render HTML...
+
+    MainServlet->>SubServlet: Gọi include (RequestDispatcher.include)
+    Note right of SubServlet: Thực thi logic độc lập
+    SubServlet-->>MainServlet: Trả về kết quả đầu ra (Output Stream)
+
+    Note over MainServlet: Tiếp tục render phần còn lại
+
+    MainServlet-->>Container: Hoàn tất phản hồi (Response)
+    Container-->>Browser: Trả về trang HTML hoàn chỉnh

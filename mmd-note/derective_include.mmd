@@ -1,0 +1,19 @@
+sequenceDiagram
+    autonumber
+    participant Browser as Trình duyệt (Client)
+    participant Container as JSP Container (Tomcat)
+    participant MainJSP as Main.jsp (Source)
+    participant Fragment as Fragment.jsp (Include file)
+    participant Servlet as Generated Servlet (Java)
+
+    Note over Container, Servlet: Giai đoạn Dịch (Translation Phase)
+    Container->>MainJSP: Đọc nội dung file chính
+    Container->>Fragment: Đọc nội dung file được include
+    Note right of Container: Gộp nội dung Fragment vào Main
+    Container->>Servlet: Biên dịch thành 1 file .java/.class duy nhất
+
+    Note over Browser, Servlet: Giai đoạn Yêu cầu (Request Phase)
+    Browser->>Container: Gửi HTTP Request (ví dụ: main.jsp)
+    Container->>Servlet: Thực thi logic Servlet
+    Servlet-->>Container: Trả về luồng HTML đã gộp
+    Container-->>Browser: Trả về 1 file HTML duy nhất
